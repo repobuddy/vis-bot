@@ -1,7 +1,10 @@
 {
   "name": "GitHub Actions (TypeScript)",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
-  "postCreateCommand": "npm install",
+  "postCreateCommand": {
+    "install-npm": "npm install -g @antfu/ni",
+    "install": "npm install"
+  },
   "customizations": {
     "codespaces": {
       "openFiles": ["README.md"]
