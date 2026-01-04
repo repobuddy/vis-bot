@@ -1,27 +1,20 @@
 {
-  "name": "GitHub Actions (TypeScript)",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
-  "postCreateCommand": {
-    "install-ni": "npm install -g @antfu/ni",
-    "install": "npm install"
-  },
-  "customizations": {
-    "codespaces": {
-      "openFiles": ["README.md"]
-    },
-    "vscode": {
-      "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.tabSize": 2,
-        "editor.formatOnSave": true
-      }
-    }
-  },
-  "remoteEnv": {
-    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers-community/npm-features/prettier:1": {}
-  }
+	"name": "GitHub Actions (TypeScript)",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:20",
+	"postCreateCommand": {
+		"install-ni": "npm install -g @antfu/ni",
+		"install": "npm install"
+	},
+	"customizations": {
+		"codespaces": {
+			"openFiles": ["README.md"]
+		}
+	},
+	"remoteEnv": {
+		"GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/devcontainers-community/npm-features/prettier:1": {}
+	}
 }
