@@ -101,4 +101,3 @@ __tests__/runner/*
 # IDE files
 .idea
 *.code-workspace
-dist
