@@ -1,9 +1,10 @@
-// See: https://github.com/egoist/tsdown
+import { defineConfig } from 'tsdown'
 
-export default {
+export default defineConfig({
 	entry: ['src/index.ts'],
 	format: ['esm'],
 	outDir: 'dist',
-	sourcemap: true,
 	clean: true,
-}
+	sourcemap: true,
+	noExternal: ['@actions/core'],
+})
