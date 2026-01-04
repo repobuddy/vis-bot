@@ -23,9 +23,9 @@
 	"scripts": {
 		"all": "pnpm check:fix && pnpm test && pnpm coverage && pnpm package",
 		"bundle": "pnpm check:fix && pnpm package",
-		"coverage": "pnpx make-coverage-badge --output-path ./badges/coverage.svg",
 		"check": "biome check",
 		"check:fix": "biome format --write",
+		"coverage": "pnpx make-coverage-badge --output-path ./badges/coverage.svg",
 		"local-action": "pnpx @github/local-action . src/main.ts .env",
 		"package": "pnpx rimraf ./dist && pnpx rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
 		"package:watch": "pnpm package -- --watch",
@@ -51,6 +51,7 @@
 	"optionalDependencies": {
 		"@rollup/rollup-linux-x64-gnu": "*"
 	},
+	"packageManager": "pnpm@10.27.0",
 	"engines": {
 		"node": ">=24.0.0"
 	}
