@@ -27,7 +27,7 @@
 		"check:fix": "biome format --write",
 		"coverage": "pnpx make-coverage-badge --output-path ./badges/coverage.svg",
 		"local-action": "pnpx @github/local-action . src/main.ts .env",
-		"package": "pnpx rimraf ./dist && pnpx rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+		"package": "pnpx rimraf ./dist && pnpm rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
 		"package:watch": "pnpm package -- --watch",
 		"test": "vitest",
 		"w": "vitest watch"
