@@ -2,7 +2,7 @@
   "name": "GitHub Actions (TypeScript)",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
   "postCreateCommand": {
-    "install-npm": "npm install -g @antfu/ni",
+    "install-ni": "npm install -g @antfu/ni",
     "install": "npm install"
   },
   "customizations": {
@@ -10,27 +10,10 @@
       "openFiles": ["README.md"]
     },
     "vscode": {
-      "extensions": [
-        "bierner.markdown-preview-github-styles",
-        "davidanson.vscode-markdownlint",
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "github.copilot",
-        "github.copilot-chat",
-        "github.vscode-github-actions",
-        "github.vscode-pull-request-github",
-        "me-dutour-mathieu.vscode-github-actions",
-        "redhat.vscode-yaml",
-        "rvest.vs-code-prettier-eslint",
-        "yzhang.markdown-all-in-one"
-      ],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.tabSize": 2,
-        "editor.formatOnSave": true,
-        "markdown.extension.list.indentationSize": "adaptive",
-        "markdown.extension.italic.indicator": "_",
-        "markdown.extension.orderedList.marker": "one"
+        "editor.formatOnSave": true
       }
     }
   },
