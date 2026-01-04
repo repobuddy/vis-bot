@@ -124,7 +124,7 @@ So, what are you waiting for? Go ahead and start customizing your action!
    npm run all
    ```
 
-   > This step is important! It will run [`rollup`](https://rollupjs.org/) to
+   > This step is important! It will run [`tsdown`](https://github.com/rolldown/tsdown) to
    > build the final JavaScript action code with all dependencies included. If
    > you do not run this step, your action will not work correctly when it is
    > used in a workflow.
