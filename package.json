@@ -33,7 +33,7 @@
 		"w": "vitest watch"
 	},
 	"dependencies": {
-		"@actions/core": "^1.11.1"
+		"@actions/core": "^3.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
