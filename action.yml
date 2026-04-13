@@ -1,7 +1,6 @@
 name: Visual Snapshot PR bot
 description:
-  Run a command to refresh Visual Snapshot baselines (`vitest-plugin-vis` / `storybook-addon-vis`), commit,
-  push, and open or update a pull request.
+  Update Visual Snapshot baselines (`vitest-plugin-vis` / `storybook-addon-vis`)
 author: Homa Wong
 
 branding:
