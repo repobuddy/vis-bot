@@ -55,8 +55,12 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_BIOME_FORMAT: true
           VALIDATE_BIOME_LINT: true
+          VALIDATE_JSON_PRETTIER: false
+          VALIDATE_JSONC_PRETTIER: false
           VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
           VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JSCPD: false
           VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_TYPESCRIPT_PRETTIER: false
           VALIDATE_JSON: false
+          VALIDATE_YAML_PRETTIER: false
