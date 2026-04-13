@@ -1,8 +1,34 @@
 {
-	"cSpell.words": ["pnpx", "repobuddy"],
+	"[javascript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "yzhang.markdown-all-in-one",
+		"editor.formatOnSave": true
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"cSpell.words": ["pnpx", "repobuddy", "unstub", "vitest"],
+	"editor.codeActionsOnSave": {
+		"source.fixAll.biome": "explicit",
+		"source.organizeImports.biome": "explicit"
+	},
 	"editor.defaultFormatter": "biomejs.biome",
-	"editor.tabSize": 2,
 	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
 	"github.copilot.chat.commitMessageGeneration.instructions": [
 		{
 			"text": "Use conventional commit message format."
@@ -18,7 +44,7 @@
 			"text": "Review the code changes carefully before accepting them."
 		}
 	],
-	"markdown.extension.list.indentationSize": "adaptive",
 	"markdown.extension.italic.indicator": "_",
+	"markdown.extension.list.indentationSize": "adaptive",
 	"markdown.extension.orderedList.marker": "one"
 }

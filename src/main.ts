@@ -1,5 +1,23 @@
 import * as core from '@actions/core'
-import { wait } from './wait.js'
+import * as github from '@actions/github'
+import { type SnapshotPrInputs, runSnapshotPrBot } from './git-pr.js'
+
+function readInputs(): SnapshotPrInputs {
+	const token = core.getInput('token', { trimWhitespace: false }) || process.env.GITHUB_TOKEN || ''
+	const updateCommand = core.getInput('update-command', { required: true })
+	return {
+		updateCommand,
+		targetBranch: core.getInput('target-branch'),
+		baseBranch: core.getInput('base-branch'),
+		token,
+		commitMessage: core.getInput('commit-message'),
+		prTitle: core.getInput('pr-title'),
+		prBody: core.getInput('pr-body'),
+		gitUserName: core.getInput('git-user-name'),
+		gitUserEmail: core.getInput('git-user-email'),
+		pathsToAddRaw: core.getInput('paths-to-add'),
+	}
+}
 
 /**
  * The main function for the action.
@@ -8,20 +26,29 @@ import { wait } from './wait.js'
  */
 export async function run(): Promise<void> {
 	try {
-		const ms: string = core.getInput('milliseconds')
+		const inputs = readInputs()
+		if (!inputs.token) {
+			core.setFailed('No GitHub token: provide input `token` or set GITHUB_TOKEN.')
+			return
+		}
 
-		// Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-		core.debug(`Waiting ${ms} milliseconds ...`)
+		const result = await runSnapshotPrBot(github.context, inputs)
 
-		// Log the current timestamp, wait, then log the new timestamp
-		core.debug(new Date().toTimeString())
-		await wait(Number.parseInt(ms, 10))
-		core.debug(new Date().toTimeString())
+		core.setOutput('updated', result.updated ? 'true' : 'false')
+		core.setOutput('pr-number', result.prNumber !== undefined ? String(result.prNumber) : '')
+		core.setOutput('commit-sha', result.commitSha ?? '')
 
-		// Set outputs for other workflow steps to use
-		core.setOutput('time', new Date().toTimeString())
+		if (result.updated) {
+			core.info(`Committed baselines at ${result.commitSha ?? 'unknown'}`)
+			if (result.prNumber !== undefined) {
+				core.info(`Opened pull request #${result.prNumber}`)
+			} else {
+				core.info('Pull request already open for this branch; push updated the existing PR.')
+			}
+		} else {
+			core.info('No baseline file changes; working tree clean after update command.')
+		}
 	} catch (error) {
-		// Fail the workflow run if an error occurs
 		if (error instanceof Error) core.setFailed(error.message)
 	}
 }

@@ -1,23 +1,70 @@
-name: The name of your action here
-description: Provide a description here
-author: Your name or organization here
+name: Visual Snapshot PR bot
+description:
+  Run a command to refresh Visual Snapshot baselines (`vitest-plugin-vis` / `storybook-addon-vis`), commit,
+  push, and open or update a pull request.
+author: Homa Wong
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: heart
-  color: red
+  icon: image
+  color: purple
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: Your input description here
+  update-command:
+    description:
+      Shell command that updates Visual Snapshot baselines (e.g. `pnpm exec vitest run -u`). Runs with `bash -c` on
+      Linux/macOS runners.
     required: true
-    default: '1000'
+  target-branch:
+    description:
+      Branch to push commits to. Defaults to the pull_request head ref when the event is
+      pull_request, otherwise bot/update-snapshots.
+    required: false
+    default: ''
+  base-branch:
+    description:
+      Base branch for the PR and for syncing before updates. Defaults to the pull_request base ref
+      when applicable, otherwise the repository default branch.
+    required: false
+    default: ''
+  token:
+    description: Token with contents and pull-requests write (typically github.token).
+    required: false
+    default: ${{ github.token }}
+  commit-message:
+    description: Git commit message when Visual Snapshot baselines change.
+    required: false
+    default: 'chore(vis): update image baselines'
+  pr-title:
+    description: Title for the pull request when a new one is created.
+    required: false
+    default: 'chore(vis): update image baselines'
+  pr-body:
+    description: Body for the pull request when a new one is created.
+    required: false
+    default:
+      Automated update of Visual Snapshot baselines. Review diffs and merge when intentional.
+  git-user-name:
+    description: Author name for the Visual Snapshot baseline commit.
+    required: false
+    default: github-actions[bot]
+  git-user-email:
+    description: Author email for the Visual Snapshot baseline commit.
+    required: false
+    default: github-actions[bot]@users.noreply.github.com
+  paths-to-add:
+    description:
+      Space- or newline-separated paths for git add (e.g. `__vis__`). Empty means `git add -A` (all
+      changes).
+    required: false
+    default: ''
 
-# Define your outputs here.
 outputs:
-  time:
-    description: Your output description here
+  updated:
+    description: 'true if Visual Snapshot baseline files changed and were committed, false if the tree stayed clean.'
+  pr-number:
+    description: Number of the PR created this run (empty if no new PR was opened).
+  commit-sha:
+    description: SHA of the Visual Snapshot baseline commit (empty if updated is false).
 
 runs:
   using: node24
