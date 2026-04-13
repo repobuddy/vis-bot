@@ -6,7 +6,13 @@
 [![CodeQL](https://github.com/repobuddy/vis-bot/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/repobuddy/vis-bot/actions/workflows/codeql-analysis.yml)
 ![Coverage](./badges/coverage.svg)
 
-GitHub Action that runs a **baseline update** command for [Repobuddy visual-testing](https://github.com/repobuddy/visual-testing) (e.g. [vitest-plugin-vis](https://www.npmjs.com/package/vitest-plugin-vis) or [storybook-addon-vis](https://www.npmjs.com/package/storybook-addon-vis)), **commits** the changed image baselines, **pushes** to a branch, and **opens a pull request** when none exists yet. If a PR for that branch is already open, a new push **updates** it automatically.
+GitHub Action that runs a **baseline update** command for [Repobuddy visual-testing](https://github.com/repobuddy/visual-testing):
+
+- [vitest-plugin-vis](https://www.npmjs.com/package/vitest-plugin-vis)
+- [storybook-addon-vis](https://www.npmjs.com/package/storybook-addon-vis)
+
+**commits** the changed image baselines, **pushes** to a branch, and **opens a pull request** when none exists yet.
+If a PR for that branch is already open, a new push **updates** it automatically.
 
 ## What you need in the workflow
 
