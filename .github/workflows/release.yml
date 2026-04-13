@@ -11,10 +11,6 @@ permissions:
   contents: write
   pull-requests: write
 
-env:
-  # Opt into Node 24 for actions (e.g. pnpm/action-setup) before runner default flips; see GitHub changelog
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   release:
     name: Release
@@ -33,7 +29,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version-file: .node-version
+          node-version: 24
+          # node-version-file: .node-version
           cache: pnpm
 
       - name: Install dependencies
@@ -46,4 +43,4 @@ jobs:
           version: pnpm run version-packages
           publish: pnpm run release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
