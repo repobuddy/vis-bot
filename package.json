@@ -23,13 +23,16 @@
 	"scripts": {
 		"all": "pnpm check:fix && pnpm test && pnpm coverage && pnpm package",
 		"bundle": "pnpm check:fix && pnpm package",
+		"cs": "changeset",
 		"check": "biome check",
 		"check:fix": "biome format --write",
 		"coverage": "pnpx make-coverage-badge --output-path ./badges/coverage.svg",
 		"local-action": "pnpx @github/local-action . src/main.ts .env",
 		"package": "pnpm tsdown",
 		"package:watch": "pnpm tsdown --watch",
+		"release": "changeset publish",
 		"test": "vitest",
+		"version-packages": "changeset version && pnpm package",
 		"w": "vitest watch"
 	},
 	"dependencies": {
@@ -39,6 +42,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
+		"@changesets/cli": "^2.30.0",
 		"@github/local-action": "^6.0.2",
 		"@repobuddy/biome": "^2.2.0",
 		"@types/node": "^24.10.1",
