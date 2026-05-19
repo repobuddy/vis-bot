@@ -36,7 +36,7 @@
 		"w": "vitest watch"
 	},
 	"dependencies": {
-		"@actions/core": "^1.11.1",
+		"@actions/core": "^3.0.1",
 		"@actions/exec": "^3.0.0",
 		"@actions/github": "^9.1.0"
 	},
