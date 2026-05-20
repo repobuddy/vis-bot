@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import { type SnapshotPrInputs, runSnapshotPrBot } from './git-pr.js'
+import { runSnapshotPrBot, type SnapshotPrInputs } from './git-pr.js'
 
 function readInputs(): SnapshotPrInputs {
 	const token = core.getInput('token', { trimWhitespace: false }) || process.env.GITHUB_TOKEN || ''
