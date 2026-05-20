@@ -57,7 +57,10 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"picomatch": ">=4.0.4"
+			"picomatch": ">=4.0.4",
+			"minimatch": ">=9.0.9",
+			"undici": ">=7.25.0",
+			"lodash": ">=4.18.1"
 		}
 	}
 }
