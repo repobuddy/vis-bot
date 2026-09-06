@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as exec from '@actions/exec'
 import type * as github from '@actions/github'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { mockGetOctokit } = vi.hoisted(() => ({
 	mockGetOctokit: vi.fn(),

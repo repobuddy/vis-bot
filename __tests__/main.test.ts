@@ -1,9 +1,10 @@
 /**
  * Unit tests for the action entrypoint, src/main.ts
  */
+
+import * as github from '@actions/github'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as core from '../__fixtures__/core.js'
-import * as github from '@actions/github'
 
 const { mockRunSnapshotPrBot } = vi.hoisted(() => ({
 	mockRunSnapshotPrBot: vi.fn(),
