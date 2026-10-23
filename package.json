@@ -1,18 +1,18 @@
 {
-	"name": "typescript-action",
+	"name": "vis-bot",
 	"version": "0.0.1",
 	"private": true,
-	"description": "GitHub Actions TypeScript template",
+	"description": "Visual Snapshot PR bot",
 	"keywords": [
 		"actions"
 	],
-	"homepage": "https://github.com/actions/typescript-action",
+	"homepage": "https://github.com/repobuddy/vis-bot",
 	"bugs": {
-		"url": "https://github.com/actions/typescript-action/issues"
+		"url": "https://github.com/repobuddy/vis-bot/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/actions/typescript-action.git"
+		"url": "git+https://github.com/repobuddy/vis-bot.git"
 	},
 	"license": "MIT",
 	"author": "",

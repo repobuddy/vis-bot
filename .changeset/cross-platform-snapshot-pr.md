@@ -1,5 +1,5 @@
 ---
-"typescript-action": minor
+"vis-bot": minor
 ---
 
 Make the action usable for per-OS snapshot PRs from CI.
