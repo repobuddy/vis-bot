@@ -1,4 +1,4 @@
-# typescript-action
+# vis-bot
 
 ## 0.0.1
 
