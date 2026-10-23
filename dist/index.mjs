@@ -26294,7 +26294,7 @@ function resolveShell(shell, command, platform = process.platform, env = process
 				if (!root) continue;
 				const candidate = `${root}\\Git\\bin\\bash.exe`;
 				if (exists(candidate)) return {
-					tool: candidate,
+					tool: `"${candidate}"`,
 					args: ["-c", command]
 				};
 			}

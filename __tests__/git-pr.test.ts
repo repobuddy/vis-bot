@@ -226,7 +226,7 @@ describe('resolveShell', () => {
 
 	it('uses Git for Windows bash on win32, not the WSL launcher on PATH', () => {
 		const r = resolveShell('bash', 'echo hi', 'win32', { ProgramFiles: 'C:\\Program Files' }, () => true)
-		expect(r.tool).toBe('C:\\Program Files\\Git\\bin\\bash.exe')
+		expect(r.tool).toBe('"C:\\Program Files\\Git\\bin\\bash.exe"')
 		expect(r.args).toEqual(['-c', 'echo hi'])
 	})
 

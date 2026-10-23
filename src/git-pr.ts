@@ -86,7 +86,9 @@ export function resolveShell(
 				for (const root of [env.ProgramW6432, env.ProgramFiles, 'C:\\Program Files']) {
 					if (!root) continue
 					const candidate = `${root}\\Git\\bin\\bash.exe`
-					if (exists(candidate)) return { tool: candidate, args: ['-c', command] }
+					if (exists(candidate))
+						// exec splits its first argument on spaces, so a path with spaces must be quoted.
+						return { tool: `"${candidate}"`, args: ['-c', command] }
 				}
 			}
 			return { tool: name, args: ['-c', command] }
