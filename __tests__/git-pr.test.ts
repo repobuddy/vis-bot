@@ -14,7 +14,14 @@ vi.mock('@actions/github', async (importOriginal) => {
 	}
 })
 
-import { parsePathsToAdd, resolveBranches, runSnapshotPrBot, type SnapshotPrInputs } from '../src/git-pr.js'
+import {
+	isForkPullRequest,
+	parsePathsToAdd,
+	resolveBranches,
+	resolveShell,
+	runSnapshotPrBot,
+	type SnapshotPrInputs,
+} from '../src/git-pr.js'
 
 vi.mock('@actions/exec', () => ({
 	getExecOutput: vi.fn(),
@@ -160,7 +167,7 @@ describe('runSnapshotPrBot', () => {
 				}
 				return Promise.resolve(ok)
 			}
-			if (cmd === 'git' && a[0] === 'diff' && a[1] === '--cached') {
+			if (cmd === 'git' && a[0] === 'diff' && a[1] === '--cached' && a[2] === '--quiet') {
 				return Promise.resolve({ exitCode: 1, stdout: '', stderr: '' })
 			}
 			if (cmd === 'git' && a[0] === 'rev-parse') {
@@ -178,5 +185,64 @@ describe('runSnapshotPrBot', () => {
 		expect(result.commitSha).toBe('deadbeef')
 		expect(result.prNumber).toBe(7)
 		expect(create).toHaveBeenCalledOnce()
+	})
+})
+
+describe('isForkPullRequest', () => {
+	const prCtx = (head: unknown, baseName: string | null = 'acme/demo') =>
+		fakeContext({
+			eventName: 'pull_request',
+			payload: {
+				pull_request: { number: 1, head, base: { ref: 'main', repo: baseName ? { full_name: baseName } : undefined } },
+			},
+		} as unknown as Partial<typeof github.context>)
+
+	it('is false without a pull_request payload (workflow_dispatch)', () => {
+		expect(isForkPullRequest(fakeContext())).toBe(false)
+	})
+
+	it('is false when the head repo is the base repo', () => {
+		expect(isForkPullRequest(prCtx({ ref: 'f', repo: { full_name: 'acme/demo', fork: false } }))).toBe(false)
+	})
+
+	it('is true when the head repo differs', () => {
+		expect(isForkPullRequest(prCtx({ ref: 'f', repo: { full_name: 'x/demo', fork: true } }))).toBe(true)
+	})
+
+	it('is true when the fork was deleted', () => {
+		expect(isForkPullRequest(prCtx({ ref: 'f', repo: null }))).toBe(true)
+	})
+
+	it('falls back to the fork flag when the base repo is unknown', () => {
+		expect(isForkPullRequest(prCtx({ ref: 'f', repo: { full_name: 'x/demo', fork: true } }, null))).toBe(true)
+		expect(isForkPullRequest(prCtx({ ref: 'f', repo: { full_name: 'x/demo', fork: false } }, null))).toBe(false)
+	})
+})
+
+describe('resolveShell', () => {
+	it('defaults to bash -c', () => {
+		expect(resolveShell('', 'echo hi', 'linux')).toEqual({ tool: 'bash', args: ['-c', 'echo hi'] })
+	})
+
+	it('uses Git for Windows bash on win32, not the WSL launcher on PATH', () => {
+		const r = resolveShell('bash', 'echo hi', 'win32', { ProgramFiles: 'C:\\Program Files' }, () => true)
+		expect(r.tool).toBe('C:\\Program Files\\Git\\bin\\bash.exe')
+		expect(r.args).toEqual(['-c', 'echo hi'])
+	})
+
+	it('falls back to bash on win32 when Git for Windows is not found', () => {
+		expect(resolveShell('bash', 'x', 'win32', {}, () => false).tool).toBe('bash')
+	})
+
+	it('runs pwsh with a stop-on-error wrapper that keeps native exit codes', () => {
+		const r = resolveShell('pwsh', 'pnpm verify', 'win32')
+		expect(r.tool).toBe('pwsh')
+		expect(r.args.slice(0, 3)).toEqual(['-NoProfile', '-NonInteractive', '-Command'])
+		expect(r.args[3]).toContain('pnpm verify')
+		expect(r.args[3]).toContain('exit $LASTEXITCODE')
+	})
+
+	it('rejects unknown shells', () => {
+		expect(() => resolveShell('zsh', 'x')).toThrow(/Unsupported shell/u)
 	})
 })

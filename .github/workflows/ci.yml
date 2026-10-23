@@ -40,8 +40,12 @@ jobs:
         run: pnpm test
 
   test-action:
-    name: GitHub Actions Test
-    runs-on: ubuntu-latest
+    name: GitHub Actions Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout
@@ -54,8 +58,23 @@ jobs:
         id: test-action
         uses: ./
         with:
-          update-command: 'true'
+          update-command: 'echo update-command ran under bash'
+
+      - name: Test Local Action (pwsh)
+        id: test-action-pwsh
+        uses: ./
+        with:
+          update-command: 'Write-Host "update-command ran under pwsh"'
+          shell: pwsh
+
+      - name: Test Local Action (commit-only)
+        id: test-action-commit-only
+        uses: ./
 
       - name: Print Output
         id: output
-        run: echo "updated=${{ steps.test-action.outputs.updated }}"
+        shell: bash
+        run: |
+          echo "updated=${{ steps.test-action.outputs.updated }}"
+          echo "updated (pwsh)=${{ steps.test-action-pwsh.outputs.updated }}"
+          echo "updated (commit-only)=${{ steps.test-action-commit-only.outputs.updated }}"
