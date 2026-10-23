@@ -10,9 +10,17 @@ branding:
 inputs:
   update-command:
     description:
-      Shell command that updates Visual Snapshot baselines (e.g. `pnpm exec vitest run -u`). Runs with `bash -c` on
-      Linux/macOS runners.
-    required: true
+      Command that updates Visual Snapshot baselines (e.g. `pnpm exec vitest run -u`), run with `shell`. Leave empty to
+      skip it and commit the changes already in the working tree, for when an earlier step (with its own retries and
+      timeout) produced them.
+    required: false
+    default: ''
+  shell:
+    description:
+      Shell that runs `update-command`. One of `bash`, `sh`, `pwsh` or `powershell`. On Windows runners `bash` is Git
+      for Windows' bash.
+    required: false
+    default: bash
   target-branch:
     description:
       Branch to push commits to. Defaults to the pull_request head ref when the event is
@@ -62,6 +70,9 @@ outputs:
     description: 'true if Visual Snapshot baseline files changed and were committed, false if the tree stayed clean.'
   pr-number:
     description: Number of the PR created this run (empty if no new PR was opened).
+  skipped:
+    description:
+      'true if the run did nothing on purpose, e.g. the pull request comes from a fork and github.token cannot push.'
   commit-sha:
     description: SHA of the Visual Snapshot baseline commit (empty if updated is false).
 

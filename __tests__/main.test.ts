@@ -76,6 +76,20 @@ describe('main.ts', () => {
 		expect(core.setOutput).toHaveBeenCalledWith('commit-sha', 'abc')
 	})
 
+	it('sets skipped and logs the reason for a skipped run', async () => {
+		mockRunSnapshotPrBot.mockResolvedValue({
+			updated: false,
+			prNumber: undefined,
+			commitSha: undefined,
+			skippedReason: 'fork',
+		})
+		await run()
+		expect(core.setOutput).toHaveBeenCalledWith('skipped', 'true')
+		expect(core.setOutput).toHaveBeenCalledWith('updated', 'false')
+		expect(core.info).toHaveBeenCalledWith('Skipped: fork')
+		expect(core.setFailed).not.toHaveBeenCalled()
+	})
+
 	it('sets outputs when there are no changes', async () => {
 		mockRunSnapshotPrBot.mockResolvedValue({
 			updated: false,

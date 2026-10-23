@@ -67,23 +67,53 @@ Use the same pattern: add whatever **Storybook / test runner** steps your projec
 
 See [`action.yml`](action.yml) for the full list. Commonly used inputs:
 
-- **`update-command`** (required): Shell command run with `bash -c` (Linux/macOS runners).
+- **`update-command`**: Command that refreshes the baselines, run with `shell`. Leave it empty to commit the changes already in the working tree (see [Running the update yourself](#running-the-update-yourself)).
+- **`shell`**: `bash` (default), `sh`, `pwsh` or `powershell`. On Windows runners `bash` is Git for Windows' bash, the same one `shell: bash` uses in a workflow step, not the WSL launcher.
 - **`target-branch`**: Branch to push. Defaults to the **pull_request head** when the event is `pull_request`, otherwise `bot/update-snapshots`.
 - **`base-branch`**: Base for the PR and for syncing. Defaults to the **pull_request base** when applicable, otherwise the repository default branch.
 - **`paths-to-add`**: Optional space-separated paths for `git add`. Empty means `git add -A`.
 
-Outputs: **`updated`**, **`pr-number`** (set only when a PR is created in that run), **`commit-sha`**.
+Outputs: **`updated`**, **`pr-number`** (set only when a PR is created in that run), **`commit-sha`**, **`skipped`** (`true` when the run did nothing on purpose, such as a fork PR).
+
+## Running the update yourself
+
+If the baselines come from a step you want to control (retries, a timeout, a matrix of OSes), run it in your own workflow step and leave `update-command` empty. The action then only commits, pushes and opens the PR from whatever changed in the working tree:
+
+```yaml
+- uses: nick-fields/retry@v4
+  with:
+    max_attempts: 3
+    timeout_minutes: 10
+    command: pnpm verify:ci
+
+- uses: repobuddy/vis-bot@v1
+  if: matrix.node == 'lts/*'
+  with:
+    target-branch: vis-bot/update-snapshot/${{ github.head_ref }}-${{ runner.os }}-lts-latest
+    base-branch: ${{ github.head_ref }}
+    paths-to-add: "*/*/__vis__/${{ runner.os == 'Windows' && 'win32' || 'linux' }}"
+```
+
+A retry input would duplicate what `nick-fields/retry` and `timeout-minutes` already do, and could not cover work the caller does around the command, so the action has none.
+
+### A snapshot PR separate from the feature branch
+
+Set `target-branch` to a new branch and `base-branch` to the pull request's head branch. The action pushes the baselines to `target-branch` (created from `base-branch`) and opens a PR from it into `base-branch`. This works on `pull_request` and on `workflow_dispatch`, where there is no pull request payload and you pass the head ref yourself.
 
 ## Branch and PR behavior
 
-1. Fetches `origin` and checks out the target branch, creating it from `base-branch` if it does not exist on the remote, or merging `base-branch` into it if it does.
-2. Runs `update-command`.
-3. If there are no file changes, the action succeeds with `updated=false`.
-4. Otherwise it commits, pushes, and calls the REST API to **create** a PR only when no open PR exists for `head = owner:target-branch` and `base = base-branch`.
+1. Runs `update-command` (if set) in the checked-out tree. If there are no file changes, the action succeeds with `updated=false`.
+2. Commits the changes to a temporary local commit, so they survive switching branches.
+3. Fetches `base-branch` (and `target-branch` when it exists on the remote), then checks out the target branch, creating it from `base-branch` if it does not exist on the remote, or merging `base-branch` into it if it does.
+4. Copies the changed files onto the target branch and commits them. If the target branch already holds identical files, the action succeeds with `updated=false`.
+5. Pushes, and calls the REST API to **create** a PR only when no open PR exists for `head = owner:target-branch` and `base = base-branch`.
+
+Merging into an existing target branch needs shared history, so a shallow checkout (`actions/checkout` defaults to `fetch-depth: 1`) is deepened automatically. If the fetch or merge still fails, use `fetch-depth: 0`.
 
 ## Limitations
 
-- **Fork PRs**: Workflows triggered from forks often receive a read-only `GITHUB_TOKEN`, so pushes or PR creation may fail unless you use a different approach (for example a carefully scoped PAT or `pull_request_target`, which has strong security implications—review [GitHub’s docs](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token) before changing event or token strategy).
+- **Fork PRs**: `github.token` is read-only for pull requests from forks, so the action cannot push. It skips them: it logs why, sets `skipped=true` and `updated=false`, and the job passes. Pushing to forks would need a different token or `pull_request_target`, which has strong security implications; review [GitHub’s docs](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token) first.
+- **Pull requests that `github.token` cannot push for other reasons** (for example Dependabot, whose token is read-only): skip them in your workflow with an `if:`.
 - **Concurrency**: For scheduled or parallel triggers, consider a [`concurrency` group](https://docs.github.com/en/actions/using-jobs/using-concurrency) so two jobs do not push to the same bot branch at once.
 
 ## Developing
